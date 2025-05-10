@@ -10,20 +10,14 @@ const Auth = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Initialize navigation
 
     useEffect(() => {
-        setUsername(localStorage.getItem("username"));
+        setUsername(localStorage.getItem("username")); // Sync username state with local storage
     }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    // Password validation function
-    const isValidPassword = (password) => {
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        return passwordRegex.test(password);
     };
 
     const handleSubmit = async (e) => {
@@ -32,24 +26,17 @@ const Auth = () => {
         setLoading(true);
         setError("");
 
-        // Enforce password validation for signup
-        if (isSignup && !isValidPassword(formData.password)) {
-            setError("Password must be at least 8 characters, include a number and a symbol.");
-            setLoading(false);
-            return;
-        }
-
         try {
             const response = await axios.post(`http://localhost:9090${endpoint}`, formData);
             if (!isSignup) {
-                localStorage.setItem("jwt", response.data.token);
-                localStorage.setItem("username", formData.username);
+                localStorage.setItem("jwt", response.data.token);  // Store JWT token
+                localStorage.setItem("username", formData.username);  // Store username
                 setToken(response.data.token);
                 setUsername(formData.username);
-                navigate("/cars");
+                navigate("/cars"); // Redirect to project page after login
             }
 
-            alert(isSignup ? "User registered successfully!" : "Login successful!");
+            alert(`${isSignup ? "User registered successfully!" : "Login successful!"}`);
         } catch (error) {
             setError(error.response?.data?.message || "Server error. Try again.");
         } finally {
@@ -62,7 +49,7 @@ const Auth = () => {
         localStorage.removeItem("username");
         setToken(null);
         setUsername(null);
-        navigate("/auth");
+        navigate("/auth"); // Redirect to login page after logout
         alert("Logged out successfully!");
     };
 
@@ -102,7 +89,7 @@ const styles = {
         justifyContent: "center",
         alignItems: "center",
         height: "100vh",
-        background: "linear-gradient(to right,rgba(245, 244, 240, 0.89),rgba(237, 234, 241, 0.93))",
+        background: "linear-gradient(to right, #007BFF, #6610f2)",
     },
     card: {
         backgroundColor: "#fff",
